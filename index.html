@@ -398,11 +398,6 @@ body {
   cursor: pointer; color: var(--text3); font-family: var(--sans);
   transition: all .15s;
 }
-.cat-pill.active-song { background: var(--song-bg); color: var(--song-text); border-color: var(--song); }
-.cat-pill.active-philo { background: var(--philo-bg); color: var(--philo-text); border-color: var(--philo); }
-.cat-pill.active-lecture { background: var(--lecture-bg); color: var(--lecture-text); border-color: var(--lecture); }
-.cat-pill.active-reve { background: var(--reve-bg); color: var(--reve-text); border-color: var(--reve); }
-.cat-pill.active-vie { background: var(--vie-bg); color: var(--vie-text); border-color: var(--vie); }
 .capture-save-btn {
   background: var(--accent2); border: none; border-radius: 20px;
   padding: 6px 16px; font-size: 12px; font-weight: 500;
@@ -849,6 +844,203 @@ body {
   font-size: 18px; padding: 0 4px; line-height: 1;
 }
 .install-dismiss:hover { color: var(--text); }
+
+/* ── Category dialogs & pills ── */
+.cat-dialog-overlay {
+  position: fixed; inset: 0; z-index: 600;
+  background: rgba(0,0,0,0.55); backdrop-filter: blur(3px);
+  display: none; align-items: center; justify-content: center; padding: 20px;
+}
+.cat-dialog-overlay.show { display: flex; }
+.cat-dialog-box {
+  width: 100%; max-width: 360px; background: var(--bg2);
+  border: 1px solid var(--border2); border-radius: var(--r2);
+  padding: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+.cat-dialog-title { font-family: var(--serif); font-size: 18px; color: var(--text); margin-bottom: 14px; }
+.cat-dialog-input {
+  width: 100%; padding: 10px 12px; background: var(--bg3);
+  border: 1px solid var(--border); border-radius: var(--r);
+  color: var(--text); font-size: 14px; font-family: var(--sans);
+  outline: none; margin-bottom: 16px;
+}
+.cat-dialog-input:focus { border-color: var(--border2); }
+.cat-dialog-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 8px; }
+.cat-dialog-colors { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 20px; }
+.cat-color-swatch {
+  width: 100%; aspect-ratio: 1; border-radius: 50%; cursor: pointer;
+  border: 2px solid transparent; transition: transform .12s, border-color .12s;
+}
+.cat-color-swatch:hover { transform: scale(1.1); }
+.cat-color-swatch.selected { border-color: var(--text); }
+.cat-dialog-actions { display: flex; gap: 8px; justify-content: flex-end; }
+.cat-dialog-cancel {
+  background: none; border: 1px solid var(--border); border-radius: var(--r);
+  padding: 8px 14px; font-size: 13px; color: var(--text2); cursor: pointer; font-family: var(--sans);
+}
+.cat-dialog-cancel:hover { color: var(--text); border-color: var(--border2); }
+.cat-dialog-confirm {
+  background: var(--accent2); border: none; border-radius: var(--r);
+  padding: 8px 16px; font-size: 13px; font-weight: 500; color: var(--bg); cursor: pointer; font-family: var(--sans);
+}
+.cat-dialog-confirm:hover { background: var(--accent); }
+.cat-picker-list { display: flex; flex-direction: column; gap: 4px; margin-bottom: 16px; max-height: 260px; overflow-y: auto; }
+.cat-picker-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 12px; border-radius: var(--r); border: 1px solid var(--border);
+  background: var(--bg3); color: var(--text); font-size: 13px; cursor: pointer;
+  font-family: var(--sans); text-align: left; transition: border-color .12s;
+}
+.cat-picker-item:hover { border-color: var(--border2); }
+
+/* ── Admin: categories & keyword groups management ── */
+.admin-cat-list, .admin-kw-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+.admin-cat-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--r);
+  background: var(--bg3);
+}
+.admin-cat-row .cat-dot { width: 12px; height: 12px; flex-shrink: 0; cursor: pointer; }
+.admin-cat-name {
+  flex: 1; background: none; border: none; color: var(--text);
+  font-size: 13px; font-family: var(--sans); outline: none;
+}
+.admin-cat-del, .admin-kw-del {
+  background: none; border: none; color: var(--text3); cursor: pointer;
+  font-size: 15px; padding: 2px 4px; transition: color .15s;
+}
+.admin-cat-del:hover, .admin-kw-del:hover { color: #d4756a; }
+.admin-add-btn {
+  width: 100%; padding: 9px; border: 1px dashed var(--border2); border-radius: var(--r);
+  background: none; color: var(--text2); font-size: 12px; cursor: pointer;
+  font-family: var(--sans); transition: border-color .15s, color .15s;
+}
+.admin-add-btn:hover { border-color: var(--accent2); color: var(--text); }
+.admin-kw-row {
+  padding: 10px; border: 1px solid var(--border); border-radius: var(--r);
+  background: var(--bg3); margin-bottom: 2px;
+}
+.admin-kw-row-top { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.admin-kw-name {
+  flex: 1; background: var(--bg2); border: 1px solid var(--border); border-radius: 6px;
+  color: var(--text); font-size: 12px; font-family: var(--sans); outline: none; padding: 5px 8px;
+}
+.admin-kw-words {
+  width: 100%; background: var(--bg2); border: 1px solid var(--border); border-radius: 6px;
+  color: var(--text2); font-size: 12px; font-family: var(--sans); outline: none; padding: 6px 8px;
+  resize: vertical; min-height: 38px;
+}
+
+/* ════════════════════════════════════════
+   MOBILE — refonte responsive (≤ 768px)
+   Une vue à la fois, barre d'onglets en bas,
+   sidebar escamotable en overlay.
+════════════════════════════════════════ */
+.mobile-tabbar { display: none; }
+.mobile-topbar { display: none; }
+.mobile-backdrop { display: none; }
+
+@media (max-width: 768px) {
+  /* Sidebar devient un panneau coulissant */
+  .sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0; z-index: 400;
+    width: 260px !important;
+    transform: translateX(-100%);
+    transition: transform .28s cubic-bezier(.4,0,.2,1);
+  }
+  .sidebar.mobile-open { transform: translateX(0); }
+  .sidebar.collapsed { width: 260px !important; } /* ignore collapse on mobile */
+  .sidebar.collapsed .nav-label, .sidebar.collapsed .logo-text,
+  .sidebar.collapsed .count, .sidebar.collapsed .sidebar-label,
+  .sidebar.collapsed .btn-label { opacity: 1 !important; width: auto !important; }
+  .sidebar-toggle { display: none; }
+
+  .mobile-backdrop {
+    display: block; position: fixed; inset: 0; z-index: 350;
+    background: rgba(0,0,0,0.5); opacity: 0; pointer-events: none;
+    transition: opacity .28s;
+  }
+  .mobile-backdrop.show { opacity: 1; pointer-events: all; }
+
+  /* Top bar mobile (hamburger + titre) */
+  .mobile-topbar {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px; border-bottom: 1px solid var(--border);
+    background: var(--bg2); flex-shrink: 0;
+    padding-top: calc(12px + env(safe-area-inset-top));
+  }
+  .mobile-hamburger {
+    background: none; border: none; color: var(--text); font-size: 20px;
+    cursor: pointer; padding: 0; line-height: 1; width: 28px;
+  }
+  .mobile-topbar-title { font-family: var(--serif); font-size: 18px; color: var(--text); flex: 1; }
+  .mobile-topbar .sync-indicator { font-size: 10px; }
+
+  /* La barre de mode desktop est masquée, remplacée par mobile-topbar */
+  .mode-header { display: none; }
+
+  /* Les écrans à deux colonnes passent en une seule colonne empilée,
+     avec navigation : liste OU détail (pas les deux). */
+  #screen-exploration { flex-direction: column; }
+  .explore-list {
+    width: 100% !important; border-right: none;
+  }
+  .editor-panel {
+    position: fixed; inset: 0; z-index: 200;
+    background: var(--bg); transform: translateX(100%);
+    transition: transform .28s cubic-bezier(.4,0,.2,1);
+    padding-top: env(safe-area-inset-top);
+  }
+  .editor-panel.mobile-show { transform: translateX(0); }
+  .editor-toolbar { padding-top: 10px; }
+  .mobile-back-btn { display: inline-block !important; color: var(--accent) !important; }
+
+  /* Creation : empile les deux volets, sources en haut (scroll), écriture en bas */
+  #screen-creation { flex-direction: column; }
+  .creation-left { width: 100% !important; max-height: 38vh; border-right: none; border-bottom: 1px solid var(--border); }
+  .creation-right { flex: 1; }
+
+  /* Capture & rituel : padding réduit, pleine largeur */
+  #screen-capture, #screen-rituel { padding: 12px; align-items: stretch; }
+  .capture-card, .rituel-card { max-width: 100%; }
+
+  /* Constellation : panneau info en bas plutôt qu'en overlay à droite */
+  .const-info-panel {
+    top: auto; bottom: 70px; right: 12px; left: 12px; width: auto;
+  }
+
+  /* Barre d'onglets en bas — accès au pouce */
+  .mobile-tabbar {
+    display: flex; position: fixed; bottom: 0; left: 0; right: 0; z-index: 300;
+    background: var(--bg2); border-top: 1px solid var(--border);
+    padding: 6px 4px; padding-bottom: calc(6px + env(safe-area-inset-bottom));
+  }
+  .mobile-tab {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px;
+    background: none; border: none; cursor: pointer; padding: 6px 2px;
+    color: var(--text3); font-family: var(--sans); font-size: 10px;
+    transition: color .15s;
+  }
+  .mobile-tab.active { color: var(--accent); }
+  .mobile-tab .tab-icon { font-size: 18px; line-height: 1; }
+
+  /* Laisse la place à la tabbar en bas */
+  .main { padding-bottom: 64px; }
+  .explore-list, .creation-right, .editor-body { padding-bottom: 8px; }
+
+  /* Bannière install remonte au-dessus de la tabbar */
+  .install-banner { bottom: 80px; }
+  .toast { bottom: 80px; }
+
+  /* Notif rituel pleine largeur en haut */
+  .notif-overlay { top: calc(12px + env(safe-area-inset-top)); left: 12px; right: 12px; width: auto; transform: translateY(-120%); }
+  .notif-overlay.show { transform: translateY(0); }
+
+  /* Textes un peu plus grands pour le confort tactile */
+  .note-card { padding: 14px 16px; }
+  .nav-btn { padding: 11px 12px; }
+  .cat-pill { padding: 7px 12px; font-size: 12px; }
+}
 </style>
 </head>
 <body>
@@ -910,20 +1102,9 @@ body {
     </div>
     <div class="sidebar-section" style="margin-top: 8px;">
       <div class="sidebar-label">Catégories</div>
-      <button class="nav-btn filter-cat" data-cat="song" data-tooltip="Chanson">
-        <span class="cat-dot" style="background: var(--song)"></span><span class="nav-label"> Chanson</span><span class="count" id="count-song">0</span>
-      </button>
-      <button class="nav-btn filter-cat" data-cat="philo" data-tooltip="Philosophie">
-        <span class="cat-dot" style="background: var(--philo)"></span><span class="nav-label"> Philosophie</span><span class="count" id="count-philo">0</span>
-      </button>
-      <button class="nav-btn filter-cat" data-cat="lecture" data-tooltip="Lecture">
-        <span class="cat-dot" style="background: var(--lecture)"></span><span class="nav-label"> Lecture</span><span class="count" id="count-lecture">0</span>
-      </button>
-      <button class="nav-btn filter-cat" data-cat="reve" data-tooltip="Rêves">
-        <span class="cat-dot" style="background: var(--reve)"></span><span class="nav-label"> Rêves</span><span class="count" id="count-reve">0</span>
-      </button>
-      <button class="nav-btn filter-cat" data-cat="vie" data-tooltip="Vie">
-        <span class="cat-dot" style="background: var(--vie)"></span><span class="nav-label"> Vie</span><span class="count" id="count-vie">0</span>
+      <div id="sidebar-categories"></div>
+      <button class="nav-btn" onclick="openNewCategoryDialog()" data-tooltip="Nouvelle catégorie" style="color:var(--text3)">
+        <span class="icon">+</span><span class="nav-label"> Nouvelle catégorie</span>
       </button>
     </div>
     <div class="sidebar-bottom">
@@ -938,6 +1119,13 @@ body {
 
   <!-- ── Main ── -->
   <div class="main">
+
+    <!-- Mobile top bar (hamburger + titre) -->
+    <div class="mobile-topbar">
+      <button class="mobile-hamburger" onclick="toggleMobileSidebar()" aria-label="Menu">☰</button>
+      <span class="mobile-topbar-title" id="mobile-mode-title">Explorer</span>
+      <span class="sync-indicator" id="sync-indicator-mobile"><span class="dot-sync"></span></span>
+    </div>
 
     <!-- Mode Header -->
     <div class="mode-header">
@@ -970,6 +1158,7 @@ body {
         </div>
         <div id="editor-content-wrap" style="display:none; flex-direction:column; flex:1; overflow:hidden;">
           <div class="editor-toolbar">
+            <button class="tb-btn mobile-back-btn" title="Retour" onclick="hideMobileEditor()" style="display:none">‹ Retour</button>
             <button class="tb-btn" title="Gras">B</button>
             <button class="tb-btn" title="Italique" style="font-style:italic">I</button>
             <button class="tb-btn" title="Citation">❝</button>
@@ -1019,13 +1208,7 @@ body {
           <div class="sug-cards" id="sug-cards"></div>
         </div>
         <div class="capture-footer">
-          <div class="cat-pills" id="capture-cats">
-            <button class="cat-pill" data-cat="song" onclick="toggleCaptureCat(this,'song')">chanson</button>
-            <button class="cat-pill" data-cat="philo" onclick="toggleCaptureCat(this,'philo')">philo</button>
-            <button class="cat-pill" data-cat="lecture" onclick="toggleCaptureCat(this,'lecture')">lecture</button>
-            <button class="cat-pill" data-cat="reve" onclick="toggleCaptureCat(this,'reve')">rêve</button>
-            <button class="cat-pill" data-cat="vie" onclick="toggleCaptureCat(this,'vie')">vie</button>
-          </div>
+          <div class="cat-pills" id="capture-cats"></div>
           <button class="capture-save-btn" onclick="saveCapture()">Sauver</button>
         </div>
       </div>
@@ -1046,11 +1229,7 @@ body {
         </div>
       </div>
       <div class="const-legend">
-        <div class="legend-item"><div class="legend-dot" style="background:var(--song)"></div> Chanson</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--philo)"></div> Philosophie</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--lecture)"></div> Lecture</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--reve)"></div> Rêves</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--vie)"></div> Vie</div>
+        <div id="const-legend-cats" style="display:flex;gap:14px;flex-wrap:wrap"></div>
         <div class="legend-item" style="margin-left:auto">
           <svg width="30" height="10"><line x1="0" y1="5" x2="30" y2="5" stroke="rgba(255,255,255,0.3)" stroke-width="2"/></svg> lien fort
         </div>
@@ -1076,13 +1255,7 @@ body {
             oninput="onRituelType()"></textarea>
         </div>
         <div class="rituel-footer">
-          <div class="rituel-cat" id="rituel-cats">
-            <button class="cat-pill" data-cat="song" onclick="toggleCaptureCat(this,'song','rituel')">chanson</button>
-            <button class="cat-pill" data-cat="philo" onclick="toggleCaptureCat(this,'philo','rituel')">philo</button>
-            <button class="cat-pill" data-cat="lecture" onclick="toggleCaptureCat(this,'lecture','rituel')">lecture</button>
-            <button class="cat-pill" data-cat="reve" onclick="toggleCaptureCat(this,'reve','rituel')">rêve</button>
-            <button class="cat-pill" data-cat="vie" onclick="toggleCaptureCat(this,'vie','rituel')">vie</button>
-          </div>
+          <div class="rituel-cat" id="rituel-cats"></div>
           <div style="display:flex;align-items:center;gap:10px">
             <span class="rituel-stats" id="rituel-stats">0 mots</span>
             <button class="rituel-save" onclick="saveRituel()">Sauver</button>
@@ -1122,6 +1295,28 @@ body {
     </div>
 
   </div><!-- /main -->
+
+  <!-- Mobile bottom tab bar -->
+  <nav class="mobile-tabbar" id="mobile-tabbar">
+    <button class="mobile-tab active" data-mode="exploration" onclick="switchMode('exploration')">
+      <span class="tab-icon">◫</span>Explorer
+    </button>
+    <button class="mobile-tab" data-mode="capture" onclick="switchMode('capture')">
+      <span class="tab-icon">✦</span>Capturer
+    </button>
+    <button class="mobile-tab" data-mode="constellation" onclick="switchMode('constellation')">
+      <span class="tab-icon">◎</span>Liens
+    </button>
+    <button class="mobile-tab" data-mode="rituel" onclick="switchMode('rituel')">
+      <span class="tab-icon">◑</span>Soir
+    </button>
+    <button class="mobile-tab" data-mode="creation" onclick="switchMode('creation')">
+      <span class="tab-icon">◈</span>Créer
+    </button>
+  </nav>
+
+  <!-- Backdrop for mobile sidebar -->
+  <div class="mobile-backdrop" id="mobile-backdrop" onclick="closeMobileSidebar()"></div>
 </div><!-- /app -->
 
 <!-- Notification overlay -->
@@ -1139,6 +1334,31 @@ body {
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
+
+<!-- New category dialog -->
+<div class="cat-dialog-overlay" id="cat-dialog">
+  <div class="cat-dialog-box">
+    <div class="cat-dialog-title">Nouvelle catégorie</div>
+    <input type="text" class="cat-dialog-input" id="cat-dialog-name" placeholder="Nom de la catégorie…" maxlength="24">
+    <div class="cat-dialog-label">Couleur</div>
+    <div class="cat-dialog-colors" id="cat-dialog-colors"></div>
+    <div class="cat-dialog-actions">
+      <button class="cat-dialog-cancel" onclick="closeCatDialog()">Annuler</button>
+      <button class="cat-dialog-confirm" onclick="confirmCreateCategory()">Créer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Category picker (for assigning to a note) -->
+<div class="cat-dialog-overlay" id="cat-picker">
+  <div class="cat-dialog-box">
+    <div class="cat-dialog-title">Choisir une catégorie</div>
+    <div class="cat-picker-list" id="cat-picker-list"></div>
+    <div class="cat-dialog-actions">
+      <button class="cat-dialog-cancel" onclick="closeCatPicker()">Fermer</button>
+    </div>
+  </div>
+</div>
 
 <!-- Install PWA banner -->
 <div class="install-banner" id="install-banner">
@@ -1215,6 +1435,19 @@ body {
         </div>
       </div>
 
+      <div class="admin-group">
+        <div class="admin-group-label">Catégories</div>
+        <div id="admin-cat-list" class="admin-cat-list"></div>
+        <button class="admin-add-btn" onclick="openNewCategoryDialog()">+ Ajouter une catégorie</button>
+      </div>
+
+      <div class="admin-group">
+        <div class="admin-group-label">Groupes de mots-clés</div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:10px;line-height:1.5">Définis des familles de mots liés (ex : « silence, vide, espace ») pour que Trace suggère des notes connectées même sans mot identique.</div>
+        <div id="admin-kw-list" class="admin-kw-list"></div>
+        <button class="admin-add-btn" onclick="addKeywordGroup()">+ Nouveau groupe</button>
+      </div>
+
     </div>
     <div class="admin-footer">
       <button class="admin-reset" onclick="resetTheme()">Réinitialiser</button>
@@ -1231,6 +1464,8 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let currentUser = null;
 let notes = [];
+let categories = [];      // [{id, name, color, position}]
+let keywordGroups = [];   // [{id, name, words:[]}]
 let currentMode = 'exploration';
 let currentNoteId = null;
 let currentFilter = 'all';
@@ -1241,13 +1476,37 @@ let creationSelectedIds = [];
 let editorDirty = false;
 let saveDebounce = null;
 
+// Palette proposée pour les nouvelles catégories (l'utilisateur peut choisir)
+const CAT_PALETTE = ['#7b6bb0','#4a8c72','#b85c35','#6b7a8d','#7a6040','#c4607e','#5a8cc4','#a8884a','#8a6db0','#5f9e8a'];
+
+function getCat(id) { return categories.find(c => c.id === id) || null; }
+function catColor(id) { const c = getCat(id); return c ? c.color : '#5e5a55'; }
+function catName(id) { const c = getCat(id); return c ? c.name : ''; }
+
+// Render helpers — colors are arbitrary hex from the user's categories,
+// so we use inline styles (with light alpha for tag backgrounds) instead
+// of the old hard-coded CSS classes.
+function hexToRgba(hex, alpha) {
+  const h = (hex || '#888888').replace('#','');
+  const n = h.length === 3 ? h.split('').map(x=>x+x).join('') : h;
+  const r = parseInt(n.slice(0,2),16), g = parseInt(n.slice(2,4),16), b = parseInt(n.slice(4,6),16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+function catDotHtml(catId, extra) {
+  return `<span class="cat-dot" style="background:${catColor(catId)};${extra||''}"></span>`;
+}
+function tagHtml(catId, label) {
+  const col = catColor(catId);
+  return `<span class="tag" style="background:${hexToRgba(col,0.16)};color:${col}">#${esc(label)}</span>`;
+}
+
 // ── DB <-> APP shape mapping ──
 function dbToNote(row) {
   return {
     id: row.id,
     title: row.title || '',
     body: row.body || '',
-    cat: row.cat || 'vie',
+    cat: row.cat || '',
     tags: row.tags || [],
     links: row.links || [],
     date: Number(row.date),
@@ -1262,7 +1521,7 @@ function noteToDb(n) {
     user_id: currentUser.id,
     title: n.title || '',
     body: n.body || '',
-    cat: n.cat || 'vie',
+    cat: n.cat || '',
     tags: n.tags || [],
     links: n.links || [],
     date: n.date,
@@ -1274,16 +1533,59 @@ function noteToDb(n) {
 
 function setSyncState(state) {
   const el = document.getElementById('sync-indicator');
-  if (!el) return;
-  if (state === 'syncing') { el.classList.add('syncing'); el.lastChild.textContent = ' Synchronisation…'; }
-  else if (state === 'error') { el.classList.remove('syncing'); el.lastChild.textContent = ' Erreur de sync'; }
-  else { el.classList.remove('syncing'); el.lastChild.textContent = ' Synchronisé'; }
+  const elM = document.getElementById('sync-indicator-mobile');
+  [el, elM].forEach(node => {
+    if (!node) return;
+    node.classList.toggle('syncing', state === 'syncing');
+  });
+  if (el) {
+    if (state === 'syncing') el.lastChild.textContent = ' Synchronisation…';
+    else if (state === 'error') el.lastChild.textContent = ' Erreur de sync';
+    else el.lastChild.textContent = ' Synchronisé';
+  }
 }
 
 async function loadNotesFromDb() {
   const { data, error } = await sb.from('notes').select('*').order('date', { ascending: false });
   if (error) { console.error(error); showToast('Erreur de chargement'); return; }
   notes = (data || []).map(dbToNote);
+}
+
+async function loadCategoriesFromDb() {
+  const { data, error } = await sb.from('categories').select('*').order('position', { ascending: true });
+  if (error) { console.error('cat load', error); return; }
+  categories = (data || []).map(r => ({ id: r.id, name: r.name, color: r.color, position: r.position }));
+}
+
+async function loadKeywordGroupsFromDb() {
+  const { data, error } = await sb.from('keyword_groups').select('*');
+  if (error) { console.error('kw load', error); return; }
+  keywordGroups = (data || []).map(r => ({ id: r.id, name: r.name, words: r.words || [] }));
+}
+
+async function createCategory(name, color) {
+  const cat = { id: 'cat' + Date.now() + Math.random().toString(36).slice(2,6), name: name.trim(), color, position: categories.length };
+  categories.push(cat);
+  try {
+    const { error } = await sb.from('categories').insert({ id: cat.id, user_id: currentUser.id, name: cat.name, color: cat.color, position: cat.position });
+    if (error) throw error;
+  } catch (e) { console.error('create cat', e); showToast('Erreur création catégorie'); }
+  return cat;
+}
+
+async function updateCategory(id, changes) {
+  const cat = getCat(id);
+  if (!cat) return;
+  Object.assign(cat, changes);
+  try { await sb.from('categories').update(changes).eq('id', id); }
+  catch (e) { console.error('update cat', e); }
+}
+
+async function deleteCategory(id) {
+  categories = categories.filter(c => c.id !== id);
+  // Notes that used this category keep their (now-orphan) id → shown neutral.
+  try { await sb.from('categories').delete().eq('id', id); }
+  catch (e) { console.error('delete cat', e); }
 }
 
 // Debounced save: writes the full note set's changed item to Supabase
@@ -1338,25 +1640,22 @@ async function deleteNoteFromDb(id) {
   }
 }
 
-// ── CLUSTERS for keyword detection ──
-const CLUSTERS = {
-  silence: ['silence','vide','espace','souffle','pause','quietude','absence'],
-  musique: ['musique','note','mélodie','son','accord','rythme','miles','davis','jazz','chanson','refrain'],
-  controle: ['contrôle','controle','résignation','résister','résistance','épictète','epictete','stoïcisme','stoicisme','stoique'],
-  camus: ['camus','étranger','etranger','absurde','indifférence','indifference','meursault','sisyphe'],
-  reve: ['rêve','reve','nuit','dormir','sommeil','forêt','foret','arbres','flotter'],
-  vie: ['vie','vrai','vérité','intention','but','sens','reconnaissance','honnête'],
-};
+// ── KEYWORD DETECTION (sans dico codé en dur) ──
+// Deux sources : (1) les mots déjà présents dans tes notes, (2) tes groupes
+// de mots-clés définis dans l'admin. Mots vides français ignorés.
+const STOPWORDS = new Set(['les','des','une','que','qui','pas','dans','pour','avec','sur','est','son','sa','ses','mes','tes','nos','vos','leur','leurs','plus','mais','donc','car','ne','de','la','le','un','et','en','au','aux','du','ce','cet','cette','ces','il','elle','on','nous','vous','ils','elles','je','tu','me','te','se','y','à','ça','cela','tout','tous','toute','toutes','être','avoir','fait','faire','comme','quand','alors','aussi','très','bien','si','ou','où']);
 
 function detectKeywords(text) {
-  const words = text.toLowerCase().split(/\W+/).filter(w => w.length > 2);
+  const words = text.toLowerCase().split(/\W+/).filter(w => w.length > 3 && !STOPWORDS.has(w));
   const matched = new Set();
   const allKeys = new Set();
   words.forEach(w => {
-    Object.values(CLUSTERS).forEach(cluster => {
-      if (cluster.some(k => k.startsWith(w) || w.startsWith(k) || k === w)) {
-        cluster.forEach(k => allKeys.add(k));
-        matched.add(w);
+    allKeys.add(w);
+    matched.add(w);
+    // expand via user-defined keyword groups
+    keywordGroups.forEach(g => {
+      if (g.words.some(k => k.toLowerCase().startsWith(w) || w.startsWith(k.toLowerCase()))) {
+        g.words.forEach(k => allKeys.add(k.toLowerCase()));
       }
     });
   });
@@ -1367,8 +1666,8 @@ function findRelatedNotes(allKeys, excludeId) {
   return notes
     .map(n => {
       if (n.id === excludeId) return null;
-      const noteWords = (n.title + ' ' + n.body).toLowerCase().split(/\W+/);
-      const hits = allKeys.filter(k => noteWords.some(w => w === k || w.startsWith(k) || k.startsWith(w)));
+      const noteWords = (n.title + ' ' + n.body).toLowerCase().split(/\W+/).filter(w => w.length > 3 && !STOPWORDS.has(w));
+      const hits = [...new Set(allKeys.filter(k => noteWords.some(w => w === k || w.startsWith(k) || k.startsWith(w))))];
       return hits.length > 0 ? { ...n, hits } : null;
     })
     .filter(Boolean)
@@ -1387,8 +1686,18 @@ function switchMode(mode) {
   document.querySelectorAll('.nav-btn[data-mode]').forEach(b => {
     b.classList.toggle('active', b.dataset.mode === mode);
   });
+  // mobile tab bar active state
+  document.querySelectorAll('.mobile-tab[data-mode]').forEach(b => {
+    b.classList.toggle('active', b.dataset.mode === mode);
+  });
   const titles = { exploration:'Explorer', capture:'Capture rapide', constellation:'Constellation', rituel:'Rituel du soir', creation:'Mode création' };
   document.getElementById('mode-title').textContent = titles[mode];
+  const mt = document.getElementById('mobile-mode-title');
+  if (mt) mt.textContent = titles[mode];
+
+  // mobile housekeeping: close sidebar, close any full-screen editor
+  closeMobileSidebar();
+  hideMobileEditor();
 
   if (mode === 'constellation') renderConstellation();
   if (mode === 'creation') renderCreationNotes();
@@ -1407,17 +1716,46 @@ document.querySelectorAll('.nav-btn[data-mode]').forEach(b => {
   b.addEventListener('click', () => switchMode(b.dataset.mode));
 });
 
-// ── FILTER BY CAT (sidebar) ──
-document.querySelectorAll('.filter-cat').forEach(b => {
-  b.addEventListener('click', () => {
-    const cat = b.dataset.cat;
-    switchMode('exploration');
-    document.querySelectorAll('.filter-cat').forEach(x => x.classList.remove('active'));
-    b.classList.add('active');
-    document.getElementById('search-input').value = '';
-    renderNotesList(notes.filter(n => n.cat === cat));
-  });
-});
+// ── CATEGORIES: rendering ──
+function renderSidebarCategories() {
+  const el = document.getElementById('sidebar-categories');
+  if (!el) return;
+  if (!categories.length) {
+    el.innerHTML = '<div style="padding:4px 10px;font-size:11px;color:var(--text3);font-style:italic;font-family:var(--serif)">Aucune catégorie</div>';
+    return;
+  }
+  el.innerHTML = categories.map(c => {
+    const count = notes.filter(n => n.cat === c.id).length;
+    return `<button class="nav-btn filter-cat" data-cat="${c.id}" data-tooltip="${esc(c.name)}" onclick="filterByCat('${c.id}')">
+      <span class="cat-dot" style="background:${c.color}"></span><span class="nav-label"> ${esc(c.name)}</span><span class="count">${count}</span>
+    </button>`;
+  }).join('');
+}
+
+function filterByCat(catId) {
+  switchMode('exploration');
+  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+  currentFilter = 'all';
+  document.getElementById('search-input').value = '';
+  renderNotesList(notes.filter(n => n.cat === catId));
+}
+
+function renderCapturePills() {
+  const html = categories.map(c =>
+    `<button class="cat-pill" data-cat="${c.id}" onclick="toggleCaptureCat(this,'${c.id}')" style="--pill-color:${c.color}">${esc(c.name)}</button>`
+  ).join('') + `<button class="cat-pill" onclick="openNewCategoryDialog('capture')" style="border-style:dashed">+ catégorie</button>`;
+  const cap = document.getElementById('capture-cats');
+  const rit = document.getElementById('rituel-cats');
+  if (cap) cap.innerHTML = html;
+  if (rit) rit.innerHTML = categories.map(c =>
+    `<button class="cat-pill" data-cat="${c.id}" onclick="toggleCaptureCat(this,'${c.id}','rituel')" style="--pill-color:${c.color}">${esc(c.name)}</button>`
+  ).join('') + `<button class="cat-pill" onclick="openNewCategoryDialog('rituel')" style="border-style:dashed">+ catégorie</button>`;
+}
+
+function renderAllCategoryUI() {
+  renderSidebarCategories();
+  renderCapturePills();
+}
 
 // ── NOTES LIST ──
 function renderNotesList(list) {
@@ -1430,15 +1768,15 @@ function renderNotesList(list) {
     <div class="note-card ${n.id === currentNoteId ? 'selected' : ''}" onclick="openNote('${n.id}')">
       <div class="note-card-top">
         <div class="note-card-title">
-          <span class="cat-dot" style="background:var(--${n.cat || 'reve'})"></span>
+          ${n.cat ? catDotHtml(n.cat) : ''}
           ${esc(n.title || 'Sans titre')}
-          ${n.second ? '<span style="font-size:9px;padding:1px 5px;border-radius:10px;background:var(--song-bg);color:var(--song-text);margin-left:4px">N2</span>' : ''}
+          ${n.second ? '<span style="font-size:9px;padding:1px 5px;border-radius:10px;background:var(--bg4);color:var(--accent);margin-left:4px">N2</span>' : ''}
           ${n.fav ? '<span style="color:var(--accent);margin-left:2px;font-size:12px">★</span>' : ''}
         </div>
         <div class="note-card-date">${relDate(n.date)}</div>
       </div>
       <div class="note-card-body">${esc(n.body || '')}</div>
-      <div class="note-tags">${(n.tags||[]).map(t => `<span class="tag tag-${n.cat}">#${t}</span>`).join('')}</div>
+      <div class="note-tags">${(n.tags||[]).map(t => tagHtml(n.cat, t)).join('')}</div>
     </div>
   `).join('');
 }
@@ -1479,13 +1817,17 @@ function openNote(id) {
   const meta = document.getElementById('editor-meta');
   meta.innerHTML = `
     <span class="editor-date-label">${new Date(n.date).toLocaleDateString('fr-FR', {day:'numeric',month:'long',year:'numeric'})}</span>
-    ${(n.tags||[]).map(t => `<span class="tag tag-${n.cat}">#${t}</span>`).join('')}
-    ${n.second ? '<span style="font-size:10px;padding:2px 7px;border-radius:20px;background:var(--song-bg);color:var(--song-text)">second niveau</span>' : ''}
+    <button class="editor-cat-btn" onclick="openCatPickerForNote('${n.id}')" style="border:1px solid var(--border);background:none;border-radius:20px;padding:3px 10px;font-size:11px;color:var(--text2);cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-family:var(--sans)">
+      ${n.cat ? catDotHtml(n.cat) : ''}${n.cat ? esc(catName(n.cat)) : 'Catégorie +'}
+    </button>
+    ${(n.tags||[]).map(t => tagHtml(n.cat, t)).join('')}
+    ${n.second ? '<span style="font-size:10px;padding:2px 7px;border-radius:20px;background:var(--bg4);color:var(--accent)">second niveau</span>' : ''}
   `;
   updateEditorStats();
   renderRelated(n);
   editorDirty = false;
   filterNotes();
+  showMobileEditor();
 }
 
 function renderRelated(n) {
@@ -1496,7 +1838,7 @@ function renderRelated(n) {
   sec.style.display = 'block';
   chips.innerHTML = linked.map(r => `
     <button class="related-chip" onclick="openNote('${r.id}')">
-      <span class="cat-dot" style="background:var(--${r.cat});display:inline-block;vertical-align:middle;margin-right:4px"></span>${esc(r.title || 'Sans titre')}
+      ${r.cat ? catDotHtml(r.cat, 'display:inline-block;vertical-align:middle;margin-right:4px') : ''}${esc(r.title || 'Sans titre')}
     </button>`).join('');
 }
 
@@ -1570,16 +1912,26 @@ function linkFromEditor() {
 // ── CAPTURE ──
 let captureActiveCat = null;
 
-function toggleCaptureCat(el, cat, context) {
+function toggleCaptureCat(el, catId, context) {
   const prefix = context === 'rituel' ? 'rituel' : 'capture';
   const container = document.getElementById(prefix + '-cats');
-  const pills = container ? container.querySelectorAll('.cat-pill') : el.parentElement.querySelectorAll('.cat-pill');
-  const isOn = el.classList.contains('active-' + cat);
-  pills.forEach(p => { p.className = 'cat-pill'; });
-  if (!isOn) {
-    el.classList.add('active-' + cat);
-    if (context === 'rituel') rituelSelectedCats = [cat];
-    else captureActiveCat = cat;
+  const pills = container ? container.querySelectorAll('.cat-pill') : [];
+  const wasActive = el.classList.contains('pill-active');
+  // reset all
+  pills.forEach(p => {
+    p.classList.remove('pill-active');
+    p.style.background = 'none';
+    p.style.color = 'var(--text3)';
+    p.style.borderColor = 'var(--border)';
+  });
+  if (!wasActive) {
+    const col = catColor(catId);
+    el.classList.add('pill-active');
+    el.style.background = hexToRgba(col, 0.18);
+    el.style.color = col;
+    el.style.borderColor = col;
+    if (context === 'rituel') rituelSelectedCats = [catId];
+    else captureActiveCat = catId;
   } else {
     if (context === 'rituel') rituelSelectedCats = [];
     else captureActiveCat = null;
@@ -1604,7 +1956,7 @@ function onCaptureType() {
     cards.innerHTML = related.map(n => `
       <div class="sug-card" onclick="openSugNote('${n.id}')">
         <div class="sug-card-title">
-          <span class="cat-dot" style="background:var(--${n.cat})"></span>
+          ${n.cat ? catDotHtml(n.cat) : ''}
           ${esc(n.title || 'Sans titre')}
         </div>
         <div class="sug-card-excerpt">${esc(n.body || '').substring(0, 80)}…</div>
@@ -1628,7 +1980,7 @@ function saveCapture() {
   const newNote = {
     id: 'n' + Date.now(),
     title, body,
-    cat: captureActiveCat || 'vie',
+    cat: captureActiveCat || '',
     tags: [],
     links: [],
     date: Date.now(),
@@ -1639,7 +1991,7 @@ function saveCapture() {
   document.getElementById('capture-text').value = '';
   document.getElementById('capture-kws').innerHTML = '<span style="font-style:italic">aucun mot-clé</span>';
   document.getElementById('capture-sugg').classList.remove('open');
-  document.querySelectorAll('#capture-cats .cat-pill').forEach(p => { p.className = 'cat-pill'; });
+  renderCapturePills();
   captureActiveCat = null;
   updateCounts();
   showToast('✦ Note capturée');
@@ -1661,7 +2013,7 @@ function saveRituel() {
   const newNote = {
     id: 'r' + Date.now(),
     title, body: text,
-    cat: rituelSelectedCats[0] || 'vie',
+    cat: rituelSelectedCats[0] || '',
     tags: ['rituel'],
     links: [],
     date: Date.now(),
@@ -1671,7 +2023,7 @@ function saveRituel() {
   notes.unshift(newNote);
   upsertNote(newNote);
   document.getElementById('rituel-text').value = '';
-  document.querySelectorAll('#rituel-cats .cat-pill').forEach(p => { p.className = 'cat-pill'; });
+  renderCapturePills();
   rituelSelectedCats = [];
   updateCounts();
   showToast('◑ Rituel sauvé');
@@ -1684,7 +2036,7 @@ function renderCreationNotes() {
   list.innerHTML = notes.map(n => `
     <div class="creation-note ${creationSelectedIds.includes(n.id) ? 'highlighted' : ''}" onclick="toggleCreationNote('${n.id}')">
       <div class="creation-note-title">
-        <span class="cat-dot" style="background:var(--${n.cat})"></span>
+        ${n.cat ? catDotHtml(n.cat) : ''}
         ${esc(n.title || 'Sans titre')}
         ${creationSelectedIds.includes(n.id) ? '<span style="margin-left:auto;color:var(--accent)">✓</span>' : ''}
       </div>
@@ -1729,7 +2081,7 @@ function saveCreation() {
   const newNote = {
     id: 'c' + Date.now(),
     title, body: text,
-    cat: 'song',
+    cat: '',
     tags: ['second-niveau'],
     links: [...creationSelectedIds],
     date: Date.now(),
@@ -1757,7 +2109,15 @@ function renderConstellation() {
   const H = svg.clientHeight || 500;
   svg.innerHTML = '';
 
-  const catColors = { song: '#7b6bb0', philo: '#4a8c72', lecture: '#b85c35', reve: '#6b7a8d', vie: '#7a6040' };
+  const nodeColor = (catId) => catId ? catColor(catId) : '#888888';
+
+  // Populate dynamic legend
+  const legendEl = document.getElementById('const-legend-cats');
+  if (legendEl) {
+    legendEl.innerHTML = categories.length
+      ? categories.map(c => `<div class="legend-item"><div class="legend-dot" style="background:${c.color}"></div> ${esc(c.name)}</div>`).join('')
+      : '<div class="legend-item" style="color:var(--text3);font-style:italic">Aucune catégorie</div>';
+  }
 
   // Position nodes
   const positioned = notes.map((n, i) => {
@@ -1796,11 +2156,12 @@ function renderConstellation() {
     g.style.cursor = 'pointer';
     g.addEventListener('click', () => showConstPanel(n));
 
+    const col = nodeColor(n.cat);
     const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     circle.setAttribute('cx', n.cx); circle.setAttribute('cy', n.cy);
     circle.setAttribute('r', n.size);
-    circle.setAttribute('fill', (catColors[n.cat] || '#888') + '33');
-    circle.setAttribute('stroke', catColors[n.cat] || '#888');
+    circle.setAttribute('fill', col + '33');
+    circle.setAttribute('stroke', col);
     circle.setAttribute('stroke-width', n.id === currentNoteId ? '2' : '0.5');
     if (n.second) circle.setAttribute('stroke-dasharray', '4 2');
     g.appendChild(circle);
@@ -1840,12 +2201,82 @@ function openRituel() { dismissNotif(); switchMode('rituel'); }
 
 // ── COUNTS ──
 function updateCounts() {
-  const cats = ['song','philo','lecture','reve','vie'];
-  document.getElementById('count-all').textContent = notes.length;
-  cats.forEach(c => {
-    const el = document.getElementById('count-' + c);
-    if (el) el.textContent = notes.filter(n => n.cat === c).length;
-  });
+  const el = document.getElementById('count-all');
+  if (el) el.textContent = notes.length;
+  renderSidebarCategories(); // counts live on the dynamic buttons now
+}
+
+// ── CATEGORY CREATION / MANAGEMENT ──
+let pendingCatContext = null; // 'capture' | 'rituel' | 'note:<id>' | null
+
+function openNewCategoryDialog(context) {
+  pendingCatContext = context || null;
+  document.getElementById('cat-dialog-name').value = '';
+  // build color swatches
+  const sw = document.getElementById('cat-dialog-colors');
+  sw.innerHTML = CAT_PALETTE.map((col, i) =>
+    `<button class="cat-color-swatch ${i===0?'selected':''}" data-color="${col}" style="background:${col}" onclick="selectCatColor(this)"></button>`
+  ).join('');
+  selectedCatColor = CAT_PALETTE[0];
+  document.getElementById('cat-dialog').classList.add('show');
+  setTimeout(() => document.getElementById('cat-dialog-name').focus(), 100);
+}
+
+let selectedCatColor = CAT_PALETTE[0];
+function selectCatColor(el) {
+  document.querySelectorAll('.cat-color-swatch').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedCatColor = el.dataset.color;
+}
+
+function closeCatDialog() {
+  document.getElementById('cat-dialog').classList.remove('show');
+  pendingCatContext = null;
+}
+
+async function confirmCreateCategory() {
+  const name = document.getElementById('cat-dialog-name').value.trim();
+  if (!name) { showToast('Donne un nom à la catégorie'); return; }
+  const cat = await createCategory(name, selectedCatColor);
+  renderAllCategoryUI();
+  // Apply to the pending context
+  const ctx = pendingCatContext;
+  closeCatDialog();
+  if (ctx === 'capture') {
+    captureActiveCat = cat.id;
+    const btn = document.querySelector(`#capture-cats .cat-pill[data-cat="${cat.id}"]`);
+    if (btn) toggleCaptureCat(btn, cat.id);
+  } else if (ctx === 'rituel') {
+    rituelSelectedCats = [cat.id];
+    const btn = document.querySelector(`#rituel-cats .cat-pill[data-cat="${cat.id}"]`);
+    if (btn) toggleCaptureCat(btn, cat.id, 'rituel');
+  } else if (ctx && ctx.startsWith('note:')) {
+    const noteId = ctx.slice(5);
+    const n = notes.find(x => x.id === noteId);
+    if (n) { n.cat = cat.id; upsertNote(n); openNote(noteId); }
+  }
+  showToast('Catégorie « ' + name + ' » créée');
+}
+
+// Pick (or change) the category of an existing note
+function openCatPickerForNote(noteId) {
+  const n = notes.find(x => x.id === noteId);
+  if (!n) return;
+  if (!categories.length) { openNewCategoryDialog('note:' + noteId); return; }
+  const picker = document.getElementById('cat-picker');
+  document.getElementById('cat-picker-list').innerHTML =
+    categories.map(c => `<button class="cat-picker-item" onclick="assignCatToNote('${noteId}','${c.id}')">
+      <span class="cat-dot" style="background:${c.color}"></span> ${esc(c.name)}
+    </button>`).join('')
+    + `<button class="cat-picker-item" onclick="assignCatToNote('${noteId}','')" style="color:var(--text3)">∅ Aucune</button>`
+    + `<button class="cat-picker-item" onclick="closeCatPicker();openNewCategoryDialog('note:${noteId}')" style="color:var(--accent)">+ Nouvelle catégorie</button>`;
+  picker.classList.add('show');
+}
+function closeCatPicker() { document.getElementById('cat-picker').classList.remove('show'); }
+function assignCatToNote(noteId, catId) {
+  const n = notes.find(x => x.id === noteId);
+  if (n) { n.cat = catId; upsertNote(n); openNote(noteId); }
+  closeCatPicker();
 }
 
 // ── UTILS ──
@@ -1948,7 +2379,109 @@ function saveAdminPrefs(partial) {
 }
 
 
-function openAdmin() { document.getElementById('admin-overlay').classList.add('show'); }
+function openAdmin() {
+  document.getElementById('admin-overlay').classList.add('show');
+  renderAdminCategories();
+  renderAdminKeywordGroups();
+}
+
+// ── Admin: categories management ──
+function renderAdminCategories() {
+  const el = document.getElementById('admin-cat-list');
+  if (!el) return;
+  if (!categories.length) {
+    el.innerHTML = '<div style="font-size:12px;color:var(--text3);font-style:italic;font-family:var(--serif);padding:4px">Aucune catégorie pour l\'instant</div>';
+    return;
+  }
+  el.innerHTML = categories.map(c => `
+    <div class="admin-cat-row">
+      <span class="cat-dot" style="background:${c.color}" onclick="cycleCatColor('${c.id}')" title="Changer la couleur"></span>
+      <input class="admin-cat-name" value="${esc(c.name)}" onchange="renameCategory('${c.id}', this.value)">
+      <button class="admin-cat-del" onclick="confirmDeleteCategory('${c.id}')" title="Supprimer">✕</button>
+    </div>`).join('');
+}
+
+function cycleCatColor(id) {
+  const cat = getCat(id);
+  if (!cat) return;
+  const idx = CAT_PALETTE.indexOf(cat.color);
+  const next = CAT_PALETTE[(idx + 1) % CAT_PALETTE.length];
+  updateCategory(id, { color: next });
+  renderAdminCategories();
+  renderAllCategoryUI();
+  filterNotes();
+}
+
+function renameCategory(id, name) {
+  const v = name.trim();
+  if (!v) { renderAdminCategories(); return; }
+  updateCategory(id, { name: v });
+  renderAllCategoryUI();
+  filterNotes();
+}
+
+function confirmDeleteCategory(id) {
+  const cat = getCat(id);
+  if (!cat) return;
+  const count = notes.filter(n => n.cat === id).length;
+  const msg = count > 0
+    ? `Supprimer « ${cat.name} » ? ${count} note(s) perdront cette catégorie (les notes restent).`
+    : `Supprimer la catégorie « ${cat.name} » ?`;
+  if (!confirm(msg)) return;
+  deleteCategory(id);
+  renderAdminCategories();
+  renderAllCategoryUI();
+  filterNotes();
+  showToast('Catégorie supprimée');
+}
+
+// ── Admin: keyword groups management ──
+function renderAdminKeywordGroups() {
+  const el = document.getElementById('admin-kw-list');
+  if (!el) return;
+  if (!keywordGroups.length) {
+    el.innerHTML = '<div style="font-size:12px;color:var(--text3);font-style:italic;font-family:var(--serif);padding:4px;margin-bottom:8px">Aucun groupe pour l\'instant</div>';
+    return;
+  }
+  el.innerHTML = keywordGroups.map(g => `
+    <div class="admin-kw-row">
+      <div class="admin-kw-row-top">
+        <input class="admin-kw-name" value="${esc(g.name)}" placeholder="Nom du groupe" onchange="updateKeywordGroup('${g.id}','name',this.value)">
+        <button class="admin-kw-del" onclick="deleteKeywordGroup('${g.id}')" title="Supprimer">✕</button>
+      </div>
+      <textarea class="admin-kw-words" placeholder="mots séparés par des virgules…" onchange="updateKeywordGroup('${g.id}','words',this.value)">${esc((g.words||[]).join(', '))}</textarea>
+    </div>`).join('');
+}
+
+async function addKeywordGroup() {
+  const g = { id: 'kw' + Date.now() + Math.random().toString(36).slice(2,5), name: '', words: [] };
+  keywordGroups.push(g);
+  try { await sb.from('keyword_groups').insert({ id: g.id, user_id: currentUser.id, name: g.name, words: g.words }); }
+  catch (e) { console.error('add kw', e); }
+  renderAdminKeywordGroups();
+}
+
+async function updateKeywordGroup(id, field, value) {
+  const g = keywordGroups.find(x => x.id === id);
+  if (!g) return;
+  let changes;
+  if (field === 'words') {
+    g.words = value.split(',').map(w => w.trim()).filter(Boolean);
+    changes = { words: g.words };
+  } else {
+    g.name = value.trim();
+    changes = { name: g.name };
+  }
+  try { await sb.from('keyword_groups').update(changes).eq('id', id); }
+  catch (e) { console.error('update kw', e); }
+}
+
+async function deleteKeywordGroup(id) {
+  keywordGroups = keywordGroups.filter(g => g.id !== id);
+  try { await sb.from('keyword_groups').delete().eq('id', id); }
+  catch (e) { console.error('delete kw', e); }
+  renderAdminKeywordGroups();
+}
 function closeAdmin() { document.getElementById('admin-overlay').classList.remove('show'); }
 function setTheme(t) { saveAdminPrefs({ theme: t }); }
 function setAccent(accent, accent2) { saveAdminPrefs({ accent, accent2: accent2 || accent }); }
@@ -1968,6 +2501,28 @@ function toggleSidebar() {
   btn.textContent = collapsed ? '▶' : '◀';
   btn.title = collapsed ? 'Développer' : 'Réduire';
   localStorage.setItem('trace-sidebar-collapsed', collapsed ? '1' : '0');
+}
+
+// ── MOBILE SIDEBAR ──
+function toggleMobileSidebar() {
+  const sb = document.getElementById('sidebar');
+  const bd = document.getElementById('mobile-backdrop');
+  const open = sb.classList.toggle('mobile-open');
+  bd.classList.toggle('show', open);
+}
+function closeMobileSidebar() {
+  document.getElementById('sidebar').classList.remove('mobile-open');
+  document.getElementById('mobile-backdrop').classList.remove('show');
+}
+
+// ── MOBILE: editor full-screen navigation (exploration) ──
+function showMobileEditor() {
+  if (window.innerWidth <= 768) {
+    document.getElementById('editor-panel').classList.add('mobile-show');
+  }
+}
+function hideMobileEditor() {
+  document.getElementById('editor-panel').classList.remove('mobile-show');
 }
 
 // ── AUTH ──
@@ -2052,7 +2607,9 @@ async function onAuthenticated(user) {
   document.getElementById('auth-screen').style.display = 'none';
   document.getElementById('main-app').style.display = 'flex';
   await loadAdminPrefsFromDb();
+  await Promise.all([loadCategoriesFromDb(), loadKeywordGroupsFromDb()]);
   await loadNotesFromDb();
+  renderAllCategoryUI();
   updateCounts();
   filterNotes();
   maybePromptRituel();

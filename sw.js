@@ -3,7 +3,7 @@
 // hors-ligne partiel (l'écriture/lecture de notes nécessite Supabase, donc
 // le réseau, mais l'interface elle-même se charge même sans connexion).
 
-const CACHE_NAME = 'trace-v2';
+const CACHE_NAME = 'trace-v3';
 const APP_SHELL = [
   './',
   './index.html',
