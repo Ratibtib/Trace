@@ -825,6 +825,30 @@ body {
 }
 .sync-indicator.syncing .dot-sync { background: var(--accent); animation: pulse-sync 1s infinite; }
 @keyframes pulse-sync { 0%,100%{opacity:1} 50%{opacity:.3} }
+.install-banner {
+  position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%) translateY(80px);
+  background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--r2);
+  padding: 12px 14px 12px 16px; z-index: 300;
+  display: flex; align-items: center; gap: 14px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  opacity: 0; transition: transform .4s cubic-bezier(.22,1,.36,1), opacity .3s;
+  pointer-events: none; max-width: 90%;
+}
+.install-banner.show { transform: translateX(-50%) translateY(0); opacity: 1; pointer-events: all; }
+.install-banner-text { font-size: 13px; color: var(--text); line-height: 1.4; }
+.install-banner-text small { display: block; color: var(--text3); font-size: 11px; margin-top: 1px; }
+.install-banner-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.install-now {
+  background: var(--accent2); border: none; border-radius: var(--r);
+  padding: 8px 14px; font-size: 13px; font-weight: 500; color: var(--bg);
+  cursor: pointer; font-family: var(--sans); white-space: nowrap;
+}
+.install-now:hover { background: var(--accent); }
+.install-dismiss {
+  background: none; border: none; cursor: pointer; color: var(--text3);
+  font-size: 18px; padding: 0 4px; line-height: 1;
+}
+.install-dismiss:hover { color: var(--text); }
 </style>
 </head>
 <body>
@@ -920,7 +944,7 @@ body {
       <span class="mode-title" id="mode-title">Explorer</span>
       <div class="mode-actions">
         <span class="sync-indicator" id="sync-indicator"><span class="dot-sync"></span> Synchronisé</span>
-        <button class="icon-btn" id="btn-notif" onclick="triggerNotif()" title="Simuler notification rituel">◑ Rituel</button>
+        <button class="icon-btn" id="btn-notif" onclick="switchMode('rituel')" title="Rituel du soir">◑ Rituel</button>
         <button class="icon-btn" id="btn-logout" onclick="handleLogout()" title="Déconnexion">⏻</button>
       </div>
     </div>
@@ -1115,6 +1139,15 @@ body {
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
+
+<!-- Install PWA banner -->
+<div class="install-banner" id="install-banner">
+  <div class="install-banner-text">Installer Trace<small>Accès rapide depuis ton écran d'accueil</small></div>
+  <div class="install-banner-actions">
+    <button class="install-now" onclick="doInstall()">Installer</button>
+    <button class="install-dismiss" onclick="dismissInstall()" title="Plus tard">×</button>
+  </div>
+</div>
 
 <!-- Admin / Personnalisation -->
 <div class="admin-overlay" id="admin-overlay">
@@ -2022,6 +2055,19 @@ async function onAuthenticated(user) {
   await loadNotesFromDb();
   updateCounts();
   filterNotes();
+  maybePromptRituel();
+}
+
+// Show the evening ritual nudge only in the evening, and only if no ritual
+// note was written today yet. Keeps it meaningful instead of random.
+function maybePromptRituel() {
+  const h = new Date().getHours();
+  const isEvening = h >= 20 || h < 3;
+  if (!isEvening) return;
+  const startOfDay = new Date(); startOfDay.setHours(0,0,0,0);
+  const wroteRituelToday = notes.some(n => n.isRituel && n.date >= startOfDay.getTime());
+  if (wroteRituelToday) return;
+  setTimeout(triggerNotif, 3500);
 }
 
 document.getElementById('auth-password').addEventListener('keydown', e => {
@@ -2070,6 +2116,42 @@ if ('serviceWorker' in navigator) {
 } else {
   console.warn('Service workers non supportés par ce navigateur');
 }
+
+// ── PWA: install prompt ──
+let deferredInstallPrompt = null;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  // Show our custom banner unless the user dismissed it before
+  if (localStorage.getItem('trace-install-dismissed') !== '1') {
+    setTimeout(() => {
+      document.getElementById('install-banner').classList.add('show');
+    }, 2000);
+  }
+});
+
+async function doInstall() {
+  document.getElementById('install-banner').classList.remove('show');
+  if (!deferredInstallPrompt) {
+    showToast('Utilise le menu du navigateur pour installer');
+    return;
+  }
+  deferredInstallPrompt.prompt();
+  const { outcome } = await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  if (outcome === 'accepted') showToast('Trace installé ✓');
+}
+
+function dismissInstall() {
+  document.getElementById('install-banner').classList.remove('show');
+  localStorage.setItem('trace-install-dismissed', '1');
+}
+
+window.addEventListener('appinstalled', () => {
+  document.getElementById('install-banner').classList.remove('show');
+  console.log('✓ Trace installé');
+});
 
 </script>
 </body>

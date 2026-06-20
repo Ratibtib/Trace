@@ -3,13 +3,14 @@
 // hors-ligne partiel (l'écriture/lecture de notes nécessite Supabase, donc
 // le réseau, mais l'interface elle-même se charge même sans connexion).
 
-const CACHE_NAME = 'trace-v1';
+const CACHE_NAME = 'trace-v2';
 const APP_SHELL = [
   './',
   './index.html',
   './manifest.json',
   './icon-192.png',
-  './icon-512.png'
+  './icon-512.png',
+  './icon-maskable-512.png'
 ];
 
 self.addEventListener('install', (event) => {
@@ -29,10 +30,12 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  const url = new URL(event.request.url);
+  let url;
+  try { url = new URL(event.request.url); } catch (e) { return; }
 
-  // Never cache Supabase API calls — always go to network for live data
-  if (url.hostname.includes('supabase.co')) {
+  // Only handle same-origin GET requests. Let everything else (Supabase API,
+  // the Supabase CDN, Google Fonts, etc.) go straight to the network.
+  if (event.request.method !== 'GET' || url.origin !== self.location.origin) {
     return;
   }
 
